@@ -23,11 +23,13 @@ const AdminMessages = lazy(() => import('./admin/AdminMessages'));
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 
+const basename = import.meta.env.BASE_URL.replace(/\/+$/, '') || '/';
+
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={basename}>
           <ScrollToTop />
           <Routes>
             {/* ── Public site ── */}
