@@ -48,10 +48,10 @@ export default function AdminLayout() {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <a href={import.meta.env.BASE_URL} className="admin-nav-link" target="_blank" rel="noreferrer">
+          <NavLink to="/" className="admin-nav-link" end>
             <i className="bi bi-box-arrow-up-right"></i>
             <span>View Store</span>
-          </a>
+          </NavLink>
           <button className="admin-nav-link admin-logout-btn" onClick={handleSignOut}>
             <i className="bi bi-box-arrow-right"></i>
             <span>Logout</span>
