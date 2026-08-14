@@ -1,0 +1,10 @@
+/* Import original CSS files */
+@import "./assets/CSS/style.css";
+@import "./assets/CSS/about-page.css";
+@import "./assets/CSS/contact-page.css";
+@import "./assets/CSS/product-page.css";
+@import "./assets/CSS/admin.css";
+
+/* Utility alias classes */
+.shrink-0 { flex-shrink: 0 !important; }
+.grow { flex-grow: 1 !important; }

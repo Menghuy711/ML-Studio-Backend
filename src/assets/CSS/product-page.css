@@ -1,0 +1,84 @@
+/* Premium Product Card CSS =========== product page */
+
+.product-card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+    transition:.4s;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.product-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+
+.product-card img{
+    height:280px;
+    width:100%;
+    object-fit:contain;
+    background:#f8f8f8;
+    padding:10px;
+
+}
+
+.product-card .card-body{
+    padding:25px;
+}
+
+.price{
+    color:#D4AF37;
+    font-weight:700;
+}
+
+.gold-btn{
+    background:#D4AF37;
+    color:white;
+    border:none;
+    border-radius:30px;
+}
+
+.gold-btn:hover{
+    background:#b89125;
+    color:white;
+}
+
+
+
+/* title style (backpack, ....)*/
+.section-title{
+    font-size:2rem;
+    font-weight:700;
+    position:relative;
+    padding-left:20px;
+}
+
+.section-title::before{
+    content:'';
+    width:6px;
+    height:100%;
+    background:#D4AF37;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+/* product detail ================================ CSS */
+.card{
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+.product-hero{
+    color: white;
+    padding: 100px 0;
+    background-image: url(/images/logo/Product-banner.avif);
+    background-size:cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+}
+

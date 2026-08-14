@@ -1,0 +1,49 @@
+/* Contact page */
+.contact-hero {
+    color: white;
+    padding: 100px 0;
+    background-image: url(/images/logo/Contact-banner.avif);
+    background-size:cover;
+    background-position: center;
+    background-position-y: -5px;
+    background-repeat: no-repeat;
+    
+}
+
+.info-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-8px);
+}
+
+.stats-section {
+    background: #212529;
+    color: white;
+    padding: 60px 0;
+}
+
+.contact-info,
+.contact-form {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+}
+
+
+.map-container{
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+.map-container iframe{
+    width:100%;
+    height:450px;
+    border:0;
+}
