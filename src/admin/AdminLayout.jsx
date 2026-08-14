@@ -48,7 +48,7 @@ export default function AdminLayout() {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <a href="/" className="admin-nav-link" target="_blank" rel="noreferrer">
+          <a href={import.meta.env.BASE_URL} className="admin-nav-link" target="_blank" rel="noreferrer">
             <i className="bi bi-box-arrow-up-right"></i>
             <span>View Store</span>
           </a>
