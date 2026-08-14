@@ -4,6 +4,7 @@ import { CartContext } from '../context/CartContextValues';
 import { AuthContext } from '../context/AuthContextValues';
 import { LayoutContext } from '../context/LayoutContextValues';
 import { supabase } from '../lib/supabaseClient';
+import { asset } from '../lib/asset';
 
 // Featured product IDs — easy to swap without touching JSX
 const featuredIds = [
@@ -95,7 +96,7 @@ export default function Home() {
                       }}
                     >
                       <img
-                        src={product.image_url}
+                        src={asset(product.image_url)}
                         className="card-img-top"
                         alt={product.name}
                         style={{

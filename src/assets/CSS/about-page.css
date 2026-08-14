@@ -1,7 +1,7 @@
 .about-hero{
     color: white;
     padding: 100px 0;
-    background-image: url(/images/logo/about01-banner.avif);
+    background-image: url(../images/logo/about01-banner.avif);
     background-size:cover;
     background-position:bottom;
     background-repeat: no-repeat;

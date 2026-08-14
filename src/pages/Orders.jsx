@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContextValues';
 import { supabase } from '../lib/supabaseClient';
+import { asset } from '../lib/asset';
 
 export default function Orders() {
   const { user, loading: authLoading } = useContext(AuthContext);
@@ -112,7 +113,7 @@ export default function Orders() {
                           <tr key={idx}>
                             <td className="ps-0" style={{ width: '50px' }}>
                               <img
-                                src={item.image}
+                                src={asset(item.image)}
                                 alt={item.title}
                                 className="rounded"
                                 style={{ width: '40px', height: '40px', objectFit: 'cover' }}

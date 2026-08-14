@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { asset } from '../lib/asset';
 
 const CATEGORIES = ['Backpacks', 'Luggage', 'Travel Bags', 'Sling & Crossbody Bags', 'Duffel Bags', 'Tote Bags', 'Accessories'];
 const BADGE_CLASSES = ['bg-dark', 'bg-danger', 'bg-success', 'bg-warning', 'bg-secondary', 'bg-info text-dark', 'bg-primary'];
@@ -196,7 +197,7 @@ export default function AdminProducts() {
                 <tr key={p.id}>
                   <td>
                     <img
-                      src={p.image_url}
+                      src={asset(p.image_url)}
                       alt={p.name}
                       style={{ width: 52, height: 52, objectFit: 'cover', borderRadius: 8, background: '#f5f5f5' }}
                       onError={(e) => { e.target.style.display = 'none'; }}

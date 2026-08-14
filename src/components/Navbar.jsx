@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContextValues';
 import { AuthContext } from '../context/AuthContextValues';
+import { asset } from '../lib/asset';
 
 export default function Navbar({ onOpenLogin, onOpenRegister }) {
   const location = useLocation();
@@ -15,7 +16,7 @@ export default function Navbar({ onOpenLogin, onOpenRegister }) {
         {/* Logo */}
         <Link className="navbar-brand d-flex justify-content-center align-items-center" to="/"
           style={{ width: '200px', height: '90px' }}>
-          <img src="/images/logo/ML Studio LOGO.png" alt="logo-ml-studio" />
+          <img src={asset('/images/logo/ML Studio LOGO.png')} alt="logo-ml-studio" />
         </Link>
 
         {/* Mobile: Cart + Toggle grouped together */}

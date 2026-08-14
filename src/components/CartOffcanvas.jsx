@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContextValues';
 import { AuthContext } from '../context/AuthContextValues';
 import { LayoutContext } from '../context/LayoutContextValues';
+import { asset } from '../lib/asset';
 
 export default function CartOffcanvas() {
   const { cartItems, removeFromCart, updateQuantity, cartTotal } = useContext(CartContext);
@@ -53,7 +54,7 @@ export default function CartOffcanvas() {
             {cartItems.map((item) => (
               <div key={item.id} className="d-flex align-items-center mb-3 pb-3 border-bottom">
                 <img
-                  src={item.image}
+                  src={asset(item.image)}
                   alt={item.title}
                   className="img-fluid rounded"
                   style={{ width: '80px', height: '80px', objectFit: 'cover' }}

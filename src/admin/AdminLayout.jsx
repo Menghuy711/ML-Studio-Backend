@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContextValues';
+import { asset } from '../lib/asset';
 
 export default function AdminLayout() {
   const { user, signOut } = useContext(AuthContext);
@@ -27,7 +28,7 @@ export default function AdminLayout() {
       {/* ── Sidebar ── */}
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="admin-logo">
-          <img src="/images/logo/ML Studio LOGO.png" alt="ML Studio" className="admin-logo-img" />
+          <img src={asset('/images/logo/ML Studio LOGO.png')} alt="ML Studio" className="admin-logo-img" />
         </div>
 
         <nav className="admin-nav">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { asset } from '../lib/asset';
 
 const STATUS_OPTIONS = ['pending', 'shipped', 'delivered', 'cancelled'];
 
@@ -180,7 +181,7 @@ export default function AdminOrders() {
                                     <tr key={i}>
                                       <td className="py-1">
                                         <div className="d-flex align-items-center gap-2">
-                                          <img src={item.image} alt={item.title} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 4 }} />
+                                          <img src={asset(item.image)} alt={item.title} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 4 }} />
                                           {item.title}
                                         </div>
                                       </td>

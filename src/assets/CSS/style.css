@@ -62,7 +62,7 @@ body{
 
 /* Hero ===================  */
 .hero{
-    background-image: url(/images/logo/banner.avif);
+    background-image: url(../images/logo/banner.avif);
     background-size:cover;
     background-position:center;
     color:white;

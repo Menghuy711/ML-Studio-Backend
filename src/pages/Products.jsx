@@ -4,6 +4,7 @@ import { CartContext } from '../context/CartContextValues';
 import { AuthContext } from '../context/AuthContextValues';
 import { LayoutContext } from '../context/LayoutContextValues';
 import { supabase } from '../lib/supabaseClient';
+import { asset } from '../lib/asset';
 
 export default function Products() {
   const { addToCart } = useContext(CartContext);
@@ -118,7 +119,7 @@ export default function Products() {
                                 }}
                               >
                                 <img
-                                  src={product.image_url}
+                                  src={asset(product.image_url)}
                                   className="card-img-top"
                                   alt={product.name}
                                   style={{

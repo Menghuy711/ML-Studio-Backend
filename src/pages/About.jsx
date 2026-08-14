@@ -1,3 +1,5 @@
+import { asset } from '../lib/asset';
+
 export default function About() {
   return (
     <>
@@ -15,7 +17,7 @@ export default function About() {
           <div className="row align-items-center">
             <div className="col-lg-6">
               <img
-                src="/images/IMG_0494.JPG"
+                src={asset('/images/IMG_0494.JPG')}
                 className="img-fluid rounded-4 shadow"
                 alt="Our Story"
               />
@@ -52,7 +54,7 @@ export default function About() {
             <div className="col-md-4">
               <div className="info-card">
                 <img 
-                  src="/images/cambodia-flag.avif" 
+                  src={asset('/images/cambodia-flag.avif')} 
                   alt="Designed in Cambodia" 
                   style={{
                     width: '100px',
@@ -73,7 +75,7 @@ export default function About() {
             <div className="col-md-4">
               <div className="info-card">
                 <img 
-                  src="/images/Making product last.jpg" 
+                  src={asset('/images/Making product last.jpg')} 
                   alt="Making products that last" 
                   style={{
                     width: '100px',
@@ -94,7 +96,7 @@ export default function About() {
             <div className="col-md-4">
               <div className="info-card">
                 <img 
-                  src="/images/recycle.avif" 
+                  src={asset('/images/recycle.avif')} 
                   alt="Recycled Materials" 
                   style={{
                     width: '100px',

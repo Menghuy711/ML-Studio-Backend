@@ -4,6 +4,7 @@ import { CartContext } from '../context/CartContextValues';
 import { AuthContext } from '../context/AuthContextValues';
 import { LayoutContext } from '../context/LayoutContextValues';
 import { supabase } from '../lib/supabaseClient';
+import { asset } from '../lib/asset';
 
 export default function Checkout() {
   const { cartItems, cartTotal, clearCart } = useContext(CartContext);
@@ -439,7 +440,7 @@ export default function Checkout() {
                           }}
                         >
                           <img
-                            src={item.image}
+                            src={asset(item.image)}
                             alt={item.title}
                             style={{
                               width: '100%',

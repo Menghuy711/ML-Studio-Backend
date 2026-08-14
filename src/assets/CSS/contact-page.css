@@ -2,7 +2,7 @@
 .contact-hero {
     color: white;
     padding: 100px 0;
-    background-image: url(/images/logo/Contact-banner.avif);
+    background-image: url(../images/logo/Contact-banner.avif);
     background-size:cover;
     background-position: center;
     background-position-y: -5px;

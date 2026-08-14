@@ -75,7 +75,7 @@
 .product-hero{
     color: white;
     padding: 100px 0;
-    background-image: url(/images/logo/Product-banner.avif);
+    background-image: url(../images/logo/Product-banner.avif);
     background-size:cover;
     background-position: center;
     background-repeat: no-repeat;

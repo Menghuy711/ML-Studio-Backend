@@ -4,6 +4,7 @@ import { CartContext } from '../context/CartContextValues';
 import { AuthContext } from '../context/AuthContextValues';
 import { LayoutContext } from '../context/LayoutContextValues';
 import { supabase } from '../lib/supabaseClient';
+import { asset } from '../lib/asset';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -52,7 +53,7 @@ export default function ProductDetails() {
     }
   }, [product]);
 
-  const mainImage = selectedColor?.image || product?.image_url;
+  const mainImage = asset(selectedColor?.image || product?.image_url);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -218,7 +219,7 @@ export default function ProductDetails() {
                       }}
                     >
                       <img
-                        src={rp.image_url}
+                        src={asset(rp.image_url)}
                         className="card-img-top"
                         alt={rp.name}
                         style={{
