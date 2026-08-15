@@ -112,11 +112,11 @@ export default function AdminDashboard() {
               <tbody>
                 {recentOrders.map((order) => (
                   <tr key={order.id}>
-                    <td className="font-mono">#{order.id.slice(0, 8)}</td>
-                    <td>{new Date(order.created_at).toLocaleDateString()}</td>
-                    <td>{(order.items || []).length} item(s)</td>
-                    <td>${Number(order.total).toFixed(2)}</td>
-                    <td>
+                    <td className="font-mono" data-label="Order ID">#{order.id.slice(0, 8)}</td>
+                    <td data-label="Date">{new Date(order.created_at).toLocaleDateString()}</td>
+                    <td data-label="Items">{(order.items || []).length} item(s)</td>
+                    <td data-label="Total">${Number(order.total).toFixed(2)}</td>
+                    <td data-label="Status">
                       <span className={`admin-status-badge admin-status-badge--${order.status}`}>
                         {order.status}
                       </span>

@@ -114,20 +114,22 @@ export default function AdminOrders() {
             </thead>
             <tbody>
               {filtered.length === 0 && (
-                <tr><td colSpan={7} className="text-center text-muted py-4">No orders found.</td></tr>
+                <tr><td colSpan={7} className="text-center text-muted py-4" data-label="">No orders found.</td></tr>
               )}
               {filtered.map((order) => (
                 <>
                   <tr key={order.id}>
-                    <td className="font-mono" style={{ fontSize: '0.85rem' }}>#{order.id.slice(0, 8)}</td>
-                    <td>
-                      <div>{order.shipping_info?.name || <span className="text-muted">Guest</span>}</div>
-                      <small className="text-muted">{order.shipping_info?.email || ''}</small>
+                    <td className="font-mono" style={{ fontSize: '0.85rem' }} data-label="Order ID">#{order.id.slice(0, 8)}</td>
+                    <td data-label="Customer">
+                      <div>
+                        <div>{order.shipping_info?.fullName || order.shipping_info?.name || <span className="text-muted">Guest</span>}</div>
+                        <small className="text-muted">{order.shipping_info?.email || ''}</small>
+                      </div>
                     </td>
-                    <td>{new Date(order.created_at).toLocaleDateString()}</td>
-                    <td>{(order.items || []).length}</td>
-                    <td>${Number(order.total).toFixed(2)}</td>
-                    <td>
+                    <td data-label="Date">{new Date(order.created_at).toLocaleDateString()}</td>
+                    <td data-label="Items">{(order.items || []).length}</td>
+                    <td data-label="Total">${Number(order.total).toFixed(2)}</td>
+                    <td data-label="Status">
                       <select
                         className={`admin-status-select admin-status-select--${order.status}`}
                         value={order.status}
@@ -139,7 +141,7 @@ export default function AdminOrders() {
                         ))}
                       </select>
                     </td>
-                    <td>
+                    <td data-label="">
                       <div className="d-flex gap-2">
                         <button
                           className="admin-btn-icon admin-btn-icon--view"
@@ -167,7 +169,7 @@ export default function AdminOrders() {
                             {/* Items */}
                             <div className="col-md-7">
                               <strong className="d-block mb-2">Order Items</strong>
-                              <table style={{ width: '100%', fontSize: '0.9rem' }}>
+                              <table className="admin-items-table" style={{ width: '100%', fontSize: '0.9rem' }}>
                                 <thead>
                                   <tr style={{ borderBottom: '1px solid #eee' }}>
                                     <th className="pb-1">Product</th>
@@ -179,15 +181,15 @@ export default function AdminOrders() {
                                 <tbody>
                                   {(order.items || []).map((item, i) => (
                                     <tr key={i}>
-                                      <td className="py-1">
+                                      <td className="py-1" data-label="Product">
                                         <div className="d-flex align-items-center gap-2">
                                           <img src={asset(item.image)} alt={item.title} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 4 }} />
                                           {item.title}
                                         </div>
                                       </td>
-                                      <td>×{item.quantity}</td>
-                                      <td>${Number(item.price).toFixed(2)}</td>
-                                      <td>${(item.price * item.quantity).toFixed(2)}</td>
+                                      <td data-label="Qty">×{item.quantity}</td>
+                                      <td data-label="Price">${Number(item.price).toFixed(2)}</td>
+                                      <td data-label="Subtotal">${(item.price * item.quantity).toFixed(2)}</td>
                                     </tr>
                                   ))}
                                 </tbody>
@@ -198,12 +200,11 @@ export default function AdminOrders() {
                               <strong className="d-block mb-2">Shipping Details</strong>
                               {order.shipping_info ? (
                                 <div style={{ fontSize: '0.9rem' }}>
-                                  <p className="mb-1"><strong>Name:</strong> {order.shipping_info.name}</p>
+                                  <p className="mb-1"><strong>Name:</strong> {order.shipping_info.fullName || order.shipping_info.name || '—'}</p>
                                   <p className="mb-1"><strong>Email:</strong> {order.shipping_info.email}</p>
                                   <p className="mb-1"><strong>Phone:</strong> {order.shipping_info.phone}</p>
                                   <p className="mb-1"><strong>Address:</strong> {order.shipping_info.address}</p>
                                   <p className="mb-1"><strong>City:</strong> {order.shipping_info.city}</p>
-                                  <p className="mb-1"><strong>Country:</strong> {order.shipping_info.country}</p>
                                 </div>
                               ) : <p className="text-muted">No shipping info.</p>}
                             </div>

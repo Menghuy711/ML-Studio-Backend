@@ -185,3 +185,48 @@ ON CONFLICT (id) DO NOTHING;
 -- 7. To make yourself admin, run this with your user UUID:
 -- UPDATE public.profiles SET is_admin = true WHERE id = 'YOUR-USER-UUID-HERE';
 -- ============================================================
+
+-- ============================================================
+-- 8. Storage bucket + policies for admin product image uploads
+-- ============================================================
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('products', 'products', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Public read: anyone can fetch product images (public bucket URL)
+DROP POLICY IF EXISTS "Public can view product images" ON storage.objects;
+CREATE POLICY "Public can view product images" ON storage.objects
+  FOR SELECT USING (bucket_id = 'products');
+
+-- Only admins can upload images
+DROP POLICY IF EXISTS "Admins can upload product images" ON storage.objects;
+CREATE POLICY "Admins can upload product images" ON storage.objects
+  FOR INSERT WITH CHECK (
+    bucket_id = 'products'
+    AND EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE profiles.id = auth.uid() AND profiles.is_admin = TRUE
+    )
+  );
+
+-- Only admins can update images
+DROP POLICY IF EXISTS "Admins can update product images" ON storage.objects;
+CREATE POLICY "Admins can update product images" ON storage.objects
+  FOR UPDATE USING (
+    bucket_id = 'products'
+    AND EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE profiles.id = auth.uid() AND profiles.is_admin = TRUE
+    )
+  );
+
+-- Only admins can delete images
+DROP POLICY IF EXISTS "Admins can delete product images" ON storage.objects;
+CREATE POLICY "Admins can delete product images" ON storage.objects
+  FOR DELETE USING (
+    bucket_id = 'products'
+    AND EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE profiles.id = auth.uid() AND profiles.is_admin = TRUE
+    )
+  );

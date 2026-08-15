@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { asset } from '../lib/asset';
 
@@ -20,6 +20,7 @@ export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -27,6 +28,11 @@ export default function AdminProducts() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null); // null = creating new
   const [form, setForm] = useState(EMPTY_FORM);
+
+  // Image upload
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState('');
+  const fileInputRef = useRef(null);
 
   // Delete confirm
   const [deleteId, setDeleteId] = useState(null);
@@ -47,11 +53,30 @@ export default function AdminProducts() {
 
   useEffect(() => { fetchProducts(); }, []);
 
+  const clearImage = () => {
+    setImageFile(null);
+    setPreview('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Please choose a valid image file.');
+      return;
+    }
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
+    setError('');
+  };
+
   const openCreate = () => {
     setForm(EMPTY_FORM);
     setEditingId(null);
     setError('');
     setSuccess('');
+    clearImage();
     setShowModal(true);
   };
 
@@ -69,6 +94,7 @@ export default function AdminProducts() {
     setEditingId(product.id);
     setError('');
     setSuccess('');
+    clearImage();
     setShowModal(true);
   };
 
@@ -77,6 +103,7 @@ export default function AdminProducts() {
     setEditingId(null);
     setForm(EMPTY_FORM);
     setError('');
+    clearImage();
   };
 
   const handleChange = (e) => {
@@ -91,12 +118,44 @@ export default function AdminProducts() {
     setError('');
     setSaving(true);
 
+    let imageUrl = form.image_url.trim();
+
+    // Upload a freshly selected image first
+    if (imageFile) {
+      setUploading(true);
+
+      // Best-effort: make sure the bucket exists (no-op if it already does).
+      await supabase.storage.createBucket('products', { public: true });
+
+      const fileExt = (imageFile.name.split('.').pop() || 'jpg').toLowerCase();
+      const filePath = `products/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${fileExt}`;
+      const { error: uploadErr } = await supabase.storage
+        .from('products')
+        .upload(filePath, imageFile, { upsert: true, contentType: imageFile.type });
+      setUploading(false);
+      if (uploadErr) {
+        setSaving(false);
+        const msg = /bucket|not found|does not exist/i.test(uploadErr.message)
+          ? 'Image upload failed: the "products" storage bucket does not exist. Open the Supabase dashboard → SQL Editor, run the storage setup from supabase-admin-schema.sql (section 8), then try again.'
+          : `Image upload failed: ${uploadErr.message}`;
+        setError(msg);
+        return;
+      }
+      imageUrl = supabase.storage.from('products').getPublicUrl(filePath).data.publicUrl;
+    }
+
+    if (!imageUrl) {
+      setSaving(false);
+      setError('Please upload an image or enter an image URL.');
+      return;
+    }
+
     const payload = {
       name: form.name.trim(),
       description: form.description.trim(),
       price: parseFloat(form.price),
       category: form.category,
-      image_url: form.image_url.trim(),
+      image_url: imageUrl,
       badge: form.badge.trim(),
       badge_class: form.badge_class,
     };
@@ -104,10 +163,29 @@ export default function AdminProducts() {
     let err;
 
     if (editingId) {
-      // UPDATE
+      // UPDATE — keep color images in sync with the new main image so the
+      // product detail page (which renders the selected color's image) updates too.
+      const existing = products.find((p) => p.id === editingId);
+      const oldImage = existing?.image_url || '';
+      let colors = existing?.colors || [];
+
+      if (imageUrl !== oldImage) {
+        const nextColors = colors.map((c) =>
+          c.image === oldImage ? { ...c, image: imageUrl } : c
+        );
+        if (!nextColors.some((c) => c.image === imageUrl)) {
+          if (nextColors.length) {
+            nextColors[0] = { ...nextColors[0], image: imageUrl };
+          } else {
+            nextColors.push({ name: 'Default', hex: '#1a1a1a', image: imageUrl });
+          }
+        }
+        colors = nextColors;
+      }
+
       ({ error: err } = await supabase
         .from('products')
-        .update(payload)
+        .update({ ...payload, colors })
         .eq('id', editingId));
     } else {
       // CREATE — generate a slug id
@@ -195,7 +273,7 @@ export default function AdminProducts() {
               )}
               {filtered.map((p) => (
                 <tr key={p.id}>
-                  <td>
+                  <td data-label="Image">
                     <img
                       src={asset(p.image_url)}
                       alt={p.name}
@@ -203,15 +281,17 @@ export default function AdminProducts() {
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
                   </td>
-                  <td>
-                    <strong>{p.name}</strong>
-                    <br />
-                    <small className="text-muted">{p.id}</small>
+                  <td data-label="Name">
+                    <div>
+                      <strong>{p.name}</strong>
+                      <br />
+                      <small className="text-muted">{p.id}</small>
+                    </div>
                   </td>
-                  <td>{p.category}</td>
-                  <td>${Number(p.price).toFixed(2)}</td>
-                  <td><span className={`badge ${p.badge_class}`}>{p.badge}</span></td>
-                  <td>
+                  <td data-label="Category">{p.category}</td>
+                  <td data-label="Price">${Number(p.price).toFixed(2)}</td>
+                  <td data-label="Badge"><span className={`badge ${p.badge_class}`}>{p.badge}</span></td>
+                  <td data-label="">
                     <div className="d-flex gap-2">
                       <button className="admin-btn-icon admin-btn-icon--edit" onClick={() => openEdit(p)} title="Edit">
                         <i className="bi bi-pencil-fill"></i>
@@ -257,8 +337,50 @@ export default function AdminProducts() {
                   </select>
                 </div>
                 <div className="col-12">
-                  <label className="admin-label">Image URL *</label>
-                  <input className="admin-input" name="image_url" value={form.image_url} onChange={handleChange} required placeholder="/images/products/backpack-01.avif" />
+                  <label className="admin-label">Product Image *</label>
+                  <div className="admin-image-uploader">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="admin-image-uploader-input"
+                      onChange={handleImageChange}
+                    />
+                    {preview || form.image_url ? (
+                      <img
+                        className="admin-image-uploader-thumb"
+                        src={preview || asset(form.image_url)}
+                        alt="Product preview"
+                        onError={(e) => { e.currentTarget.style.opacity = 0.25; }}
+                      />
+                    ) : (
+                      <div className="admin-image-uploader-placeholder">
+                        <i className="bi bi-image"></i>
+                      </div>
+                    )}
+                    <div className="admin-image-uploader-actions">
+                      <button
+                        type="button"
+                        className="admin-action-btn"
+                        onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                      >
+                        <i className="bi bi-upload me-1"></i>{preview ? 'Change Image' : 'Upload Image'}
+                      </button>
+                      {imageFile && (
+                        <button type="button" className="admin-btn-text" onClick={clearImage}>
+                          <i className="bi bi-x-circle me-1"></i> Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="admin-image-uploader-sep"><span>or paste an image URL</span></div>
+                  <input
+                    className="admin-input"
+                    name="image_url"
+                    value={form.image_url}
+                    onChange={handleChange}
+                    placeholder="https://example.com/image.jpg"
+                  />
                 </div>
                 <div className="col-12">
                   <label className="admin-label">Description *</label>
@@ -278,8 +400,12 @@ export default function AdminProducts() {
 
               <div className="admin-modal-footer">
                 <button type="button" className="admin-btn-secondary" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="admin-action-btn" disabled={saving}>
-                  {saving ? <><span className="spinner-border spinner-border-sm me-2" />Saving...</> : (editingId ? 'Save Changes' : 'Create Product')}
+                <button type="submit" className="admin-action-btn" disabled={saving || uploading}>
+                  {uploading
+                    ? <><span className="spinner-border spinner-border-sm me-2" />Uploading...</>
+                    : saving
+                      ? <><span className="spinner-border spinner-border-sm me-2" />Saving...</>
+                      : (editingId ? 'Save Changes' : 'Create Product')}
                 </button>
               </div>
             </form>
